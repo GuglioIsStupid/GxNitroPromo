@@ -11,7 +11,8 @@ giftStartURL = "https://discord.com/billing/partner-promotions/11802317122743871
 
 codes = []
 for i in range(amount):
-    r = requests.post("https://api.discord.gx.games/v1/direct-fulfillment", 
+    try:
+        r = requests.post("https://api.discord.gx.games/v1/direct-fulfillment", 
                         headers={
                             "authority": "api.discord.gx.games",
                             "accept": "*/*",
@@ -29,9 +30,13 @@ for i in range(amount):
                         },
                         data=json.dumps({"partnerUserId": "this_can_be_anything_num_{}".format(str(random.randint(1, 10000000)))})
                     ).json()
-    code = giftStartURL + r["token"]
-    codes.append(code)
-    
+        
+        code = giftStartURL + r["token"]
+        codes.append(code)
+    except:
+        print("Error. Possibly ratelimited. Saving codes to file...")
+        break
+
 # save codes to file
 with open("codes.txt", "w") as f:
     for code in codes:
